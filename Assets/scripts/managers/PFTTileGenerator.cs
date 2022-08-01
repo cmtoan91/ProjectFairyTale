@@ -15,6 +15,9 @@ public class PFTTileGenerator : MonoBehaviour
     float _tileSize = 3f;
 
     [SerializeField]
+    float _offset = 0.5f;
+
+    [SerializeField]
     Material _matWhite;
 
     [SerializeField]
@@ -57,26 +60,34 @@ public class PFTTileGenerator : MonoBehaviour
 
         //Set tile position
         newTile.transform.parent = transform;
-        newTile.transform.localPosition = new Vector3(_tileSize * coorX, 0, _tileSize * coorZ);
+        float size = _tileSize + _offset;
+        float worldPosX = size * Mathf.Sqrt(3) * coorX - size * Mathf.Sqrt(3) * 0.5f * (coorZ % 2);
+        float worldPosZ = 1.5f * size * coorZ;
+        newTile.transform.localPosition = new Vector3(worldPosX, 0, worldPosZ);
 
         //Create tile Graphic
         Mesh mesh = new Mesh();
         MeshRenderer renderer = newTile.AddComponent<MeshRenderer>();
         newTile.AddComponent<MeshFilter>().mesh = mesh;
 
-        Vector3[] vertices = new Vector3[4];
-        vertices[0] = new Vector3(0, 0, 0);
-        vertices[1] = new Vector3(0, 0, _tileSize);
-        vertices[2] = new Vector3(_tileSize, 0, _tileSize);
-        vertices[3] = new Vector3(_tileSize, 0, 0);
+        Vector3[] vertices = new Vector3[6];
+        float halfWidth = _tileSize * Mathf.Sqrt(3) * 0.5f;
+        float halfHeight = _tileSize;
 
-        int[] triangles = new int[] { 0, 1, 2, 2, 3, 0 };
+        vertices[0] = new Vector3(0, 0, halfHeight);
+        vertices[1] = new Vector3(halfWidth, 0, halfHeight * 0.5f);
+        vertices[2] = new Vector3(halfWidth, 0, -halfHeight * 0.5f);
+        vertices[3] = new Vector3(0, 0, -halfHeight);
+        vertices[4] = new Vector3(-halfWidth, 0, -halfHeight * 0.5f);
+        vertices[5] = new Vector3(-halfWidth, 0, halfHeight * 0.5f);
+
+        int[] triangles = new int[] { 0, 1, 2, 0, 2, 5, 2, 3, 4, 2, 4, 5};
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         renderer.material = mat;
 
         //Add collider
-        newTile.AddComponent<MeshCollider>();
+        newTile.AddComponent<MeshCollider>().sharedMesh = mesh;
     }
 }

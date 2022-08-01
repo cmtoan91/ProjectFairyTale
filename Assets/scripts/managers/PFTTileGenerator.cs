@@ -59,14 +59,10 @@ public class PFTTileGenerator : MonoBehaviour
         GameObject newTile = new GameObject(string.Format("Tile X: {0} Z: {1}", coorX, coorZ));
 
         //Set tile position
-        newTile.transform.parent = transform;
-        float size = _tileSize + _offset;
-        float worldPosX = size * Mathf.Sqrt(3) * coorX - size * Mathf.Sqrt(3) * 0.5f * (coorZ % 2);
-        float worldPosZ = 1.5f * size * coorZ;
-        newTile.transform.localPosition = new Vector3(worldPosX, 0, worldPosZ);
+        SetTilePosition(newTile.transform, _tileSize, coorX, coorZ);
 
-        //Create tile Graphic
-        Mesh mesh = new Mesh();
+         //Create tile Graphic
+         Mesh mesh = new Mesh();
         MeshRenderer renderer = newTile.AddComponent<MeshRenderer>();
         newTile.AddComponent<MeshFilter>().mesh = mesh;
 
@@ -89,5 +85,14 @@ public class PFTTileGenerator : MonoBehaviour
 
         //Add collider
         newTile.AddComponent<MeshCollider>().sharedMesh = mesh;
+    }
+
+    void SetTilePosition(Transform tilePos, float tileSize, int coorX, int coorZ)
+    {
+        tilePos.parent = transform;
+        float size = tileSize + _offset;
+        float worldPosX = size * Mathf.Sqrt(3) * coorX - size * Mathf.Sqrt(3) * 0.5f * (coorZ % 2);
+        float worldPosZ = 1.5f * size * coorZ;
+        tilePos.localPosition = new Vector3(worldPosX, 0, worldPosZ);
     }
 }

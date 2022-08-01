@@ -328,10 +328,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b48a915da8e03e147962ac3cab0977b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tileCountX: 10
+  _tileCountX: 20
   _tileCountZ: 10
-  _tileSize: 3
-  _offset: 0.5
+  _tileSize: 5
+  _offset: 1
   _matWhite: {fileID: 2100000, guid: 9027fdeda5fd439449644e4ec4485ed0, type: 2}
   _matBlack: {fileID: 2100000, guid: ca50c8a68240fc64babfbebbfde37d24, type: 2}
 --- !u!4 &2081661658

@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class PFTTile : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    MeshRenderer _meshRenderer;
+    Color orgColor;
+    public void Init(MeshRenderer renderer)
     {
-        
+        _meshRenderer = renderer;
+        orgColor = renderer.material.color;
+    }
+    
+    public void SelectTile()
+    {
+        _meshRenderer.material.color = Color.blue;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UnselectTile()
     {
-        
+        _meshRenderer.material.color = orgColor;
     }
+
 }

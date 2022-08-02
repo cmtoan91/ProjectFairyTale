@@ -16,6 +16,9 @@ public class PFTCameraController : MonoBehaviour
     float _cameraPanSpeed = 20f;
 
     [SerializeField]
+    float _zoomSpeed = 20f;
+
+    [SerializeField]
     PFTCameraControlType _controlType = PFTCameraControlType.Uninverted; 
 
     [SerializeField]
@@ -37,6 +40,7 @@ public class PFTCameraController : MonoBehaviour
     {
         ToMoveCamera(_keyToMove);
         ToRotateCameraAroundSelf(_keyToRotate);
+        ZoomCamera();
     }
 
 
@@ -74,14 +78,19 @@ public class PFTCameraController : MonoBehaviour
             Vector3 delta = _mousePosThisFrame - _mousePosLastFrame;
             if (delta.magnitude > _minDiff)
             {
-                Vector3 toRotate = new Vector3(delta.y, delta.x, 0);
+                Vector3 toRotate = new Vector3(delta.y, -delta.x, 0);
                 Vector3 currentEulers = _cameraToControl.transform.eulerAngles;
                 currentEulers.z = 0;
-                currentEulers += toRotate * _cameraPanSpeed * Time.deltaTime * (int)_controlType;
+                currentEulers -= toRotate * _cameraPanSpeed * Time.deltaTime * (int)_controlType;
                 _cameraToControl.transform.eulerAngles = currentEulers;
             }
             _mousePosLastFrame = Input.mousePosition;
         }
+    }
+
+    void ZoomCamera()
+    {
+        _cameraToControl.transform.position += Input.mouseScrollDelta.y * _zoomSpeed *Time.deltaTime * _cameraToControl.transform.forward;
     }
 
     void ToRotateAroundTarget(Vector3 targetPos)

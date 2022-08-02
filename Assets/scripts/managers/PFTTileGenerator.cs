@@ -62,7 +62,7 @@ public class PFTTileGenerator : MonoBehaviour
         SetTilePosition(newTile.transform, _tileSize, coorX, coorZ);
 
          //Create tile Graphic
-         Mesh mesh = new Mesh();
+        Mesh mesh = new Mesh();
         MeshRenderer renderer = newTile.AddComponent<MeshRenderer>();
         newTile.AddComponent<MeshFilter>().mesh = mesh;
 
@@ -85,6 +85,7 @@ public class PFTTileGenerator : MonoBehaviour
 
         //Add collider
         newTile.AddComponent<MeshCollider>().sharedMesh = mesh;
+        newTile.AddComponent<PFTTile>().Init(renderer);
     }
 
     void SetTilePosition(Transform tilePos, float tileSize, int coorX, int coorZ)

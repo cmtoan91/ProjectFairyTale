@@ -47,4 +47,8 @@ public class GenericSingleton<T> : MonoBehaviour where T: Component
     {
         applicationIsQuitting = true;
     }
+
+    public virtual void StartGame() { }
+    public virtual void ShutDown() { }
+    public virtual void Initialize(SceneID sceneID, bool ingame) { }
 }

@@ -31,9 +31,17 @@ public enum PFTGameUIType
     DialoguePopUpRight = 111,
     DialogueBlockingLeft = 112,
     DialogueBlockingRight = 113,
+
     Card = 200,
+    PlayerHand = 300,
 
     Invalid = 999
+}
+
+public enum EventType
+{
+    OnPlayerSpawn = 1,
+    HandUISpawn = 10,
 }
 public enum PFTUiFadeType
 {

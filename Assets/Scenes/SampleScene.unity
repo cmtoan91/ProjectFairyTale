@@ -703,7 +703,6 @@ MonoBehaviour:
   _tileSize: 5
   _offset: 1
   _matWhite: {fileID: 2100000, guid: 9027fdeda5fd439449644e4ec4485ed0, type: 2}
-  _matBlack: {fileID: 2100000, guid: ca50c8a68240fc64babfbebbfde37d24, type: 2}
 --- !u!4 &2081661658
 Transform:
   m_ObjectHideFlags: 0

@@ -20,9 +20,14 @@ public class PFTTileGenerator : MonoBehaviour
     [SerializeField]
     Material _matWhite;
 
-    [SerializeField]
-    Material _matBlack;
+    
+    public int TileCountX => _tileCountX;
+    public int TileCountZ => _tileCountZ;
+    public float TileSize => _tileSize;
+    public float OffSet => _offset;
 
+    public Material MaterialWhite => _matWhite;
+    Dictionary<Vector2, Transform> _tileMap = new Dictionary<Vector2, Transform>();
     #endregion
 
     private void Awake()
@@ -32,43 +37,44 @@ public class PFTTileGenerator : MonoBehaviour
 
     void Init()
     {
-        GenerateAllTiles(_tileCountX, _tileCountZ);
+        GenerateAllTiles(_tileCountX, _tileCountZ, _tileSize, _offset);
     }
 
-    void GenerateAllTiles(int tileCountX, int tileCountZ)
+    public void GenerateAllTiles(int tileCountX, int tileCountZ, float size, float offset)
     {
-        for(int i = 0; i < tileCountX; i++)
+        ClearAllTile();
+        for (int i = 0; i < tileCountX; i++)
         {
             for (int j = 0; j < tileCountZ; j++)
             {
-                int sum = i + j;
-                if (sum % 2 == 0)
-                {
-                    GenerateSingleTile(i, j, _matWhite);
-                }
-                else
-                {
-                    GenerateSingleTile(i, j, _matBlack);
-                }
+                _tileMap[new Vector2(i,j)] = GenerateSingleTile(i, j, size, offset, _matWhite);
             }
         }
     }
 
-    void GenerateSingleTile(int coorX, int coorZ, Material mat)
+    public void ClearAllTile()
+    {
+        foreach(Transform trans in _tileMap.Values)
+        {
+            DestroyImmediate(trans.gameObject);
+        }
+        _tileMap = new Dictionary<Vector2, Transform>();
+    }
+
+    Transform GenerateSingleTile(int coorX, int coorZ, float size, float offset, Material mat)
     {
         GameObject newTile = new GameObject(string.Format("Tile X: {0} Z: {1}", coorX, coorZ));
 
         //Set tile position
-        SetTilePosition(newTile.transform, _tileSize, coorX, coorZ);
-
+        SetTilePosition(newTile.transform, size, offset, coorX, coorZ);
          //Create tile Graphic
         Mesh mesh = new Mesh();
         MeshRenderer renderer = newTile.AddComponent<MeshRenderer>();
         newTile.AddComponent<MeshFilter>().mesh = mesh;
 
         Vector3[] vertices = new Vector3[6];
-        float halfWidth = _tileSize * Mathf.Sqrt(3) * 0.5f;
-        float halfHeight = _tileSize;
+        float halfWidth = size * Mathf.Sqrt(3) * 0.5f;
+        float halfHeight = size;
 
         vertices[0] = new Vector3(0, 0, halfHeight);
         vertices[1] = new Vector3(halfWidth, 0, halfHeight * 0.5f);
@@ -85,15 +91,18 @@ public class PFTTileGenerator : MonoBehaviour
 
         //Add collider
         newTile.AddComponent<MeshCollider>().sharedMesh = mesh;
-        newTile.AddComponent<PFTTile>().Init(renderer);
+
+        return newTile.transform;
     }
 
-    void SetTilePosition(Transform tilePos, float tileSize, int coorX, int coorZ)
+    Vector3 SetTilePosition(Transform tilePos, float tileSize, float offset, int coorX, int coorZ)
     {
         tilePos.parent = transform;
-        float size = tileSize + _offset;
+        float size = tileSize + offset;
         float worldPosX = size * Mathf.Sqrt(3) * coorX - size * Mathf.Sqrt(3) * 0.5f * (coorZ % 2);
         float worldPosZ = 1.5f * size * coorZ;
         tilePos.localPosition = new Vector3(worldPosX, 0, worldPosZ);
+
+        return tilePos.localPosition;
     }
 }

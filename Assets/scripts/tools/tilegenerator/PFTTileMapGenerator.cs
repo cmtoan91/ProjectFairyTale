@@ -46,10 +46,17 @@ namespace MapDesigner
 
         public void ClearAllTile()
         {
-            foreach (Transform trans in _tileMap.Values)
+            List<Transform> allchild = new List<Transform>();
+            for(int i = 0; i< transform.childCount; i++)
+            {
+                allchild.Add(transform.GetChild(i));
+            }
+
+            foreach(Transform trans in allchild)
             {
                 DestroyImmediate(trans.gameObject);
             }
+
             _tileMap = new Dictionary<Vector2, Transform>();
         }
 
@@ -82,7 +89,8 @@ namespace MapDesigner
             renderer.material = mat;
 
             //Add collider
-            newTile.AddComponent<MeshCollider>().sharedMesh = mesh;
+            //newTile.AddComponent<MeshCollider>();
+            newTile.AddComponent<PFTTileSlot>().SetCorners(vertices);
 
             return newTile.transform;
         }

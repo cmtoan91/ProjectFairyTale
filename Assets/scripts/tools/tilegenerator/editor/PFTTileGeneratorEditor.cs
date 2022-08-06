@@ -48,5 +48,10 @@ namespace MapDesigner
                 _generator.ClearAllTile();
             }
         }
+
+        private void OnSceneGUI()
+        {
+            
+        }
     }
 }

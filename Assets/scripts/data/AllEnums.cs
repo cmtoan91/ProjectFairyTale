@@ -49,3 +49,12 @@ public enum PFTUiFadeType
     In = 1,
     Out = 2,
 }
+
+public enum TileTerrainType 
+{
+    Debug = -1,
+    Default = 0,
+    Dirt = 10,
+    Water = 20,
+    Grass = 30
+}

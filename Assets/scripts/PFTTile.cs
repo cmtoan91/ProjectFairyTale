@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class PFTTile : MonoBehaviour
 {
+    #region props
+    [SerializeField]
+    TileTerrainType _terrainType = TileTerrainType.Dirt;
+
     MeshRenderer _meshRenderer;
     Color orgColor;
+
+    #endregion
     public void Init(MeshRenderer renderer)
     {
         _meshRenderer = renderer;

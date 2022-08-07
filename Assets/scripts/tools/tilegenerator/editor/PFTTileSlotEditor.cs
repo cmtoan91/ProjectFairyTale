@@ -1,18 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
-public class PFTTileSlotEditor : MonoBehaviour
+namespace MapDesigner
 {
-    // Start is called before the first frame update
-    void Start()
+    [CustomEditor(typeof(PFTTileSlot))]
+    public class PFTTileSlotEditor : Editor
     {
-        
-    }
+        PFTTileSlot tileslot;
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            tileslot = target as PFTTileSlot;
+            if (GUILayout.Button("Generate Tile"))
+                tileslot.GenerateTile();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            if (GUILayout.Button("Delete Tile"))
+                tileslot.DeleteTile();
+        }
     }
 }

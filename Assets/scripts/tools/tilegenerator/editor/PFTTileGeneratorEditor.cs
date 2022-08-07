@@ -27,9 +27,8 @@ namespace MapDesigner
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_offset"));
 
             if (EditorGUILayout.PropertyField(serializedObject.FindProperty("_matWhite")))
-            {
                 EditorGUIUtility.ShowObjectPicker<Material>(_generator.MaterialWhite, true, "", 0);
-            }
+            
 
             serializedObject.ApplyModifiedProperties();
 
@@ -39,19 +38,14 @@ namespace MapDesigner
             _offset = _generator.OffSet;
 
             if (GUILayout.Button("Generate Tile Map"))
-            {
                 _generator.GenerateAllTiles(_tileCountX, _tileCountZ, _tileSize, _offset);
-            }
-
-            if (GUILayout.Button("Clear Tile Map"))
-            {
-                _generator.ClearAllTile();
-            }
-        }
-
-        private void OnSceneGUI()
-        {
             
+            if (GUILayout.Button("Clear Tile Map"))
+                _generator.ClearAllTile();
+
+            if (GUILayout.Button("Load Tile Data"))
+                _generator.RefreshData();
+
         }
     }
 }

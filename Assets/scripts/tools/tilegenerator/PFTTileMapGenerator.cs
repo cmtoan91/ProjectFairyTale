@@ -30,6 +30,7 @@ namespace MapDesigner
 
         public Material MaterialWhite => _matWhite;
         Dictionary<Vector2, Transform> _tileMap = new Dictionary<Vector2, Transform>();
+        Dictionary<TileTerrainType, GameObject> _tilePrefabData = new Dictionary<TileTerrainType, GameObject>();
         #endregion
 
         public void GenerateAllTiles(int tileCountX, int tileCountZ, float size, float offset)
@@ -58,6 +59,34 @@ namespace MapDesigner
             }
 
             _tileMap = new Dictionary<Vector2, Transform>();
+        }
+
+        public void RefreshData()
+        {
+            _tilePrefabData = new Dictionary<TileTerrainType, GameObject>();
+            SO_TilePrefabHolder[] tileinfos = Resources.LoadAll<SO_TilePrefabHolder>("SOs/SO_Tiles");
+            if(tileinfos.Length > 0)
+            {
+                foreach(SO_TilePrefabHolder tile in tileinfos)
+                {
+                    _tilePrefabData[tile.TerrainType] = tile.TilePrefab;
+                    Debug.Log(tile.TerrainType + " loaded");
+                }
+            }    
+        }
+
+        public GameObject GetTilePrefab(TileTerrainType type)
+        {
+            GameObject prefab;
+            if(_tilePrefabData.TryGetValue(type, out prefab))
+            {
+                return prefab;
+            }
+            else
+            {
+                Debug.LogError("Khong tim thay Tile. An nut Refresh Data hoac them Tile vao folder");
+                return null;
+            }
         }
 
         Transform GenerateSingleTileSlot(int coorX, int coorZ, float size, float offset, Material mat)
@@ -90,7 +119,9 @@ namespace MapDesigner
 
             //Add collider
             //newTile.AddComponent<MeshCollider>();
-            newTile.AddComponent<PFTTileSlot>().SetCorners(vertices);
+            PFTTileSlot tileSlot = newTile.AddComponent<PFTTileSlot>();
+            tileSlot.SetCorners(vertices);
+            tileSlot.SetGenerator(this);
 
             return newTile.transform;
         }

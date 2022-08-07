@@ -13,6 +13,7 @@ namespace MapDesigner
         [SerializeField]
         int _tileCountZ = 10;
 
+        [Header("Adjustable after generate")]
         [SerializeField]
         float _tileSize = 3f;
 
@@ -29,8 +30,10 @@ namespace MapDesigner
         public float OffSet => _offset;
 
         public Material MaterialWhite => _matWhite;
-        Dictionary<Vector2, Transform> _tileMap = new Dictionary<Vector2, Transform>();
+        Dictionary<Vector2, PFTTileSlot> _tileMap = new Dictionary<Vector2, PFTTileSlot>();
+
         Dictionary<TileTerrainType, GameObject> _tilePrefabData = new Dictionary<TileTerrainType, GameObject>();
+        public Dictionary<TileTerrainType, GameObject> TilePrefabData => _tilePrefabData;
         #endregion
 
         public void GenerateAllTiles(int tileCountX, int tileCountZ, float size, float offset)
@@ -58,7 +61,7 @@ namespace MapDesigner
                 DestroyImmediate(trans.gameObject);
             }
 
-            _tileMap = new Dictionary<Vector2, Transform>();
+            _tileMap = new Dictionary<Vector2, PFTTileSlot>();
         }
 
         public void RefreshData()
@@ -89,7 +92,7 @@ namespace MapDesigner
             }
         }
 
-        Transform GenerateSingleTileSlot(int coorX, int coorZ, float size, float offset, Material mat)
+        PFTTileSlot GenerateSingleTileSlot(int coorX, int coorZ, float size, float offset, Material mat)
         {
             GameObject newTile = new GameObject(string.Format("Tile X: {0} Z: {1}", coorX, coorZ));
 
@@ -100,6 +103,27 @@ namespace MapDesigner
             MeshRenderer renderer = newTile.AddComponent<MeshRenderer>();
             newTile.AddComponent<MeshFilter>().mesh = mesh;
 
+            Vector3[] vertices = CalculateVertices(size);
+
+            int[] triangles = new int[] { 0, 1, 2, 0, 2, 5, 2, 3, 4, 2, 4, 5 };
+
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            renderer.material = mat;
+
+            //Add collider
+            //newTile.AddComponent<MeshCollider>();
+            PFTTileSlot tileSlot = newTile.AddComponent<PFTTileSlot>();
+            tileSlot.SetCornerOffsets(vertices);
+            tileSlot.SetCorners();
+            tileSlot.SetGenerator(this);
+            tileSlot.SetSize(size);
+
+            return tileSlot;
+        }
+
+        Vector3[] CalculateVertices(float size)
+        {
             Vector3[] vertices = new Vector3[6];
             float halfWidth = size * Mathf.Sqrt(3) * 0.5f;
             float halfHeight = size;
@@ -111,19 +135,7 @@ namespace MapDesigner
             vertices[4] = new Vector3(-halfWidth, 0, -halfHeight * 0.5f);
             vertices[5] = new Vector3(-halfWidth, 0, halfHeight * 0.5f);
 
-            int[] triangles = new int[] { 0, 1, 2, 0, 2, 5, 2, 3, 4, 2, 4, 5 };
-
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
-            renderer.material = mat;
-
-            //Add collider
-            //newTile.AddComponent<MeshCollider>();
-            PFTTileSlot tileSlot = newTile.AddComponent<PFTTileSlot>();
-            tileSlot.SetCorners(vertices);
-            tileSlot.SetGenerator(this);
-
-            return newTile.transform;
+            return vertices;
         }
 
         Vector3 SetTilePosition(Transform tilePos, float tileSize, float offset, int coorX, int coorZ)
@@ -135,6 +147,21 @@ namespace MapDesigner
             tilePos.localPosition = new Vector3(worldPosX, 0, worldPosZ);
 
             return tilePos.localPosition;
+        }
+
+        private void OnValidate()
+        {
+            foreach(Vector2 coor in _tileMap.Keys)
+            {
+                PFTTileSlot slot = _tileMap[coor];
+                SetTilePosition(slot.transform, _tileSize, _offset, (int)coor.x, (int)coor.y);
+                slot.SetSize(_tileSize);
+                Mesh mesh = slot.GetComponent<MeshFilter>().sharedMesh;
+                Vector3[] verts = CalculateVertices(_tileSize);
+                mesh.vertices = verts;
+                slot.SetCornerOffsets(verts);
+                slot.SetCorners();
+            }
         }
     }
 }

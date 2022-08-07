@@ -9,6 +9,11 @@ namespace MapDesigner {
         [SerializeField]
         TileTerrainType _terrainType = TileTerrainType.Dirt;
 
+        float _tileSize;
+
+        Vector3[] _cornersOffSet;
+        public Vector3[] CornerOffSet => _cornersOffSet;
+
         Vector3[] _corners;
         public Vector3[] Corners => _corners;
 
@@ -19,13 +24,23 @@ namespace MapDesigner {
             _generator = generator;
         }
 
-        public void SetCorners(Vector3[] corners)
+        public void SetSize(float size)
         {
-            _corners = new Vector3[corners.Length];
+            _tileSize = size;
+        }
+
+        public void SetCornerOffsets(Vector3[] corners)
+        {
+            _cornersOffSet = corners;
+        }    
+
+        public void SetCorners()
+        {
+            _corners = new Vector3[_cornersOffSet.Length];
 
             for (int i = 0; i < _corners.Length; i++)
             {
-                _corners[i] = corners[i] + transform.position;
+                _corners[i] = _cornersOffSet[i] + transform.position;
             }
         }
 
@@ -33,8 +48,11 @@ namespace MapDesigner {
         {
             DeleteTile();
             GameObject prefab = _generator.GetTilePrefab(_terrainType);
-            if(prefab !=  null)
-                Instantiate(prefab, transform);
+            if (prefab != null)
+            {
+                GameObject tile = Instantiate(prefab, transform);
+                tile.transform.localScale = new Vector3(_tileSize * 2, 1, _tileSize * 2);
+            }
         }
 
         public void DeleteTile()

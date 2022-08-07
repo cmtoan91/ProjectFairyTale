@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace MapDesigner
 {
@@ -17,21 +18,8 @@ namespace MapDesigner
         PFTTileMapGenerator _generator;
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
             _generator = target as PFTTileMapGenerator;
-                        
-            serializedObject.Update();
-
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("_tileCountX"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("_tileCountZ"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("_tileSize"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("_offset"));
-
-            if (EditorGUILayout.PropertyField(serializedObject.FindProperty("_matWhite")))
-                EditorGUIUtility.ShowObjectPicker<Material>(_generator.MaterialWhite, true, "", 0);
-            
-
-            serializedObject.ApplyModifiedProperties();
-
             _tileCountX =_generator.TileCountX;
             _tileCountZ = _generator.TileCountZ;
             _tileSize = _generator.TileSize;
@@ -42,6 +30,32 @@ namespace MapDesigner
             
             if (GUILayout.Button("Clear Tile Map"))
                 _generator.ClearAllTile();
+
+            GUILayout.Label("Data");
+
+            if(_generator.TilePrefabData.Count > 0)
+            {
+                TileTerrainType[] allterrains = Enum.GetValues(typeof(TileTerrainType)) as TileTerrainType[];
+                foreach (TileTerrainType type in allterrains)
+                {
+                    GameObject prefab;
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.TextField(type.ToString());
+                    if (_generator.TilePrefabData.TryGetValue(type, out prefab))
+                    {
+                        EditorGUILayout.TextField(prefab.name);
+                    }
+                    else
+                    {
+                        EditorGUILayout.TextField("not found");
+                    }
+                    GUILayout.EndHorizontal();
+                }
+            }
+            else
+            {
+                EditorGUILayout.TextField("No Data found or Data not loaded. Please load data");
+            }
 
             if (GUILayout.Button("Load Tile Data"))
                 _generator.RefreshData();

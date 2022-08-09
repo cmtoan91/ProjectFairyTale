@@ -23,6 +23,14 @@ namespace MapDesigner
         [SerializeField]
         Material _matWhite;
 
+        [SerializeField]
+        string _tileMapName = "New Tile Map";
+
+        [SerializeField]
+        GameObject _currentTileMapObject;
+
+        [SerializeField]
+        PFTTileMap _currentTileMap;
 
         public int TileCountX => _tileCountX;
         public int TileCountZ => _tileCountZ;
@@ -44,16 +52,26 @@ namespace MapDesigner
                 for (int j = 0; j < tileCountZ; j++)
                 {
                     _tileMap[new Vector2(i, j)] = GenerateSingleTileSlot(i, j, size, offset, _matWhite);
+                    if(_currentTileMap != null)
+                    {
+                        _currentTileMap.AddTileSlotToMap(_tileMap[new Vector2(i, j)]);
+                    }
                 }
             }
         }
 
         public void ClearAllTile()
         {
-            List<Transform> allchild = new List<Transform>();
-            for(int i = 0; i< transform.childCount; i++)
+            if(_currentTileMapObject == null)
             {
-                allchild.Add(transform.GetChild(i));
+                Debug.Log("Tile Map not selected");
+                return;
+            }
+            List<Transform> allchild = new List<Transform>();
+
+            for(int i = 0; i < _currentTileMapObject.transform.childCount; i++)
+            {
+                allchild.Add(_currentTileMapObject.transform.GetChild(i));
             }
 
             foreach(Transform trans in allchild)
@@ -90,6 +108,11 @@ namespace MapDesigner
                 Debug.LogError("Khong tim thay Tile. An nut Refresh Data hoac them Tile vao folder");
                 return null;
             }
+        }
+
+        public void SaveTileMap()
+        {
+
         }
 
         PFTTileSlot GenerateSingleTileSlot(int coorX, int coorZ, float size, float offset, Material mat)
@@ -140,7 +163,14 @@ namespace MapDesigner
 
         Vector3 SetTilePosition(Transform tilePos, float tileSize, float offset, int coorX, int coorZ)
         {
-            tilePos.parent = transform;
+            if(_currentTileMapObject == null)
+            {
+                _currentTileMapObject = new GameObject(_tileMapName);
+                _currentTileMapObject.transform.position = Vector3.zero;
+                _currentTileMap = _currentTileMapObject.AddComponent<PFTTileMap>();
+            }
+
+            tilePos.parent = _currentTileMapObject.transform;
             float size = tileSize + offset;
             float worldPosX = size * Mathf.Sqrt(3) * coorX - size * Mathf.Sqrt(3) * 0.5f * (coorZ % 2);
             float worldPosZ = 1.5f * size * coorZ;

@@ -17,6 +17,7 @@ namespace MapDesigner {
         Vector3[] _corners;
         public Vector3[] Corners => _corners;
 
+        [SerializeField]
         PFTTileMapGenerator _generator;
         #endregion
         public void SetGenerator(PFTTileMapGenerator generator)
@@ -71,7 +72,7 @@ namespace MapDesigner {
 
         private void OnDrawGizmos()
         {
-            if (_corners != null)
+            if (_corners != null && _corners.Length > 0)
             {
                 Gizmos.color = Color.gray;
                 for (int i = 0; i < _corners.Length; i++)

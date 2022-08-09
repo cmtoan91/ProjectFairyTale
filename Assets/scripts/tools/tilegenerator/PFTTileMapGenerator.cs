@@ -14,9 +14,16 @@ namespace MapDesigner
         [SerializeField]
         int _tileCountZ = 10;
 
+        
         [Header("Adjustable after generate")]
         [SerializeField]
         float _tileSize = 3f;
+
+        [SerializeField]
+        float _prefabTileSize = 0.5f;
+
+        [SerializeField]
+        float _prefabTileHeight = 1;
 
         [SerializeField]
         float _offset = 0.5f;
@@ -152,7 +159,7 @@ namespace MapDesigner
             tileSlot.SetCornerOffsets(vertices);
             tileSlot.SetCorners();
             tileSlot.SetMap(_currentTileMap);
-            tileSlot.SetSize(size);
+            tileSlot.SetSize(size, _prefabTileSize, _prefabTileHeight);
             tileSlot.SetCoordinate(coorX, coorZ);
             return tileSlot;
         }
@@ -202,7 +209,7 @@ namespace MapDesigner
             foreach(PFTTileSlot slot in _currentTileMap.AllSlot)
             {
                 SetTilePosition(slot.transform, _tileSize, _offset, slot.SlotCoordinate.x, slot.SlotCoordinate.y);
-                slot.SetSize(_tileSize);
+                slot.SetSize(_tileSize, _prefabTileSize, _prefabTileHeight);
                 Mesh mesh = slot.GetComponent<MeshFilter>().sharedMesh;
                 Vector3[] verts = CalculateVertices(_tileSize);
                 mesh.vertices = verts;

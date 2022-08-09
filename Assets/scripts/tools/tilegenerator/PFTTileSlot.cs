@@ -9,7 +9,13 @@ namespace MapDesigner {
         [SerializeField]
         TileTerrainType _terrainType = TileTerrainType.Dirt;
 
+
+        [SerializeField]
+        float _tileHeight = 1;
+
         float _tileSize;
+        float _prefabTileSize = 0.5f;
+        float _prefabTileHeight = 1;
 
         Vector3[] _cornersOffSet;
         public Vector3[] CornerOffSet => _cornersOffSet;
@@ -30,9 +36,11 @@ namespace MapDesigner {
             _map = generator;
         }
 
-        public void SetSize(float size)
+        public void SetSize(float size, float prefabSize, float prefabHeight)
         {
             _tileSize = size;
+            _prefabTileSize = prefabSize;
+            _prefabTileHeight = prefabHeight;
         }
 
         public void SetCornerOffsets(Vector3[] corners)
@@ -62,7 +70,7 @@ namespace MapDesigner {
             if (prefab != null)
             {
                 GameObject tile = Instantiate(prefab, transform);
-                tile.transform.localScale = new Vector3(_tileSize * 2, 1, _tileSize * 2);
+                tile.transform.localScale = new Vector3(_tileSize / _prefabTileSize, _tileHeight /_prefabTileHeight, _tileSize / _prefabTileSize);
                 tile.GetComponent<PFTTile>().Init(_slotCoordinate, _tileSize);
             }
         }

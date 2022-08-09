@@ -8,16 +8,27 @@ public class PFTTile : MonoBehaviour
     [SerializeField]
     TileTerrainType _terrainType = TileTerrainType.Dirt;
 
+    [SerializeField]
+    float _size;
+
+    [SerializeField]
+    float _height = 1;
+
+    [SerializeField]
+    Vector2Int _coordinate;
+
+    [SerializeField]
     MeshRenderer _meshRenderer;
     Color orgColor;
 
     #endregion
-    public void Init(MeshRenderer renderer)
+    public void Init(Vector2Int coor, float tileSize)
     {
-        _meshRenderer = renderer;
-        orgColor = renderer.material.color;
+        _coordinate = coor;
+        _size = tileSize;
     }
     
+
     public void SelectTile()
     {
         _meshRenderer.material.color = Color.blue;

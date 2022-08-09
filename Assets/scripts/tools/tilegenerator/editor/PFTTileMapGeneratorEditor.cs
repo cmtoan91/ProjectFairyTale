@@ -5,7 +5,7 @@ using System;
 namespace MapDesigner
 {
     [CustomEditor(typeof(PFTTileMapGenerator))]
-    public class PFTTileGeneratorEditor : Editor
+    public class PFTTileMapGeneratorEditor : Editor
     {
         int _tileCountX;
 
@@ -60,6 +60,8 @@ namespace MapDesigner
             if (GUILayout.Button("Load Tile Data"))
                 _generator.RefreshData();
 
+            if (GUILayout.Button("Save Tile Map"))
+                _generator.SaveTileMap();
         }
     }
 }

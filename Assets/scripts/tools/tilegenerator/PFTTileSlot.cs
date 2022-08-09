@@ -14,15 +14,20 @@ namespace MapDesigner {
         Vector3[] _cornersOffSet;
         public Vector3[] CornerOffSet => _cornersOffSet;
 
+        [SerializeField]
         Vector3[] _corners;
         public Vector3[] Corners => _corners;
 
         [SerializeField]
-        PFTTileMapGenerator _generator;
+        Vector2Int _slotCoordinate;
+        public Vector2Int SlotCoordinate => _slotCoordinate;
+
+        [SerializeField]
+        PFTTileMap _map;
         #endregion
-        public void SetGenerator(PFTTileMapGenerator generator)
+        public void SetMap(PFTTileMap generator)
         {
-            _generator = generator;
+            _map = generator;
         }
 
         public void SetSize(float size)
@@ -45,14 +50,20 @@ namespace MapDesigner {
             }
         }
 
+        public void SetCoordinate(int coorx, int coorZ)
+        {
+            _slotCoordinate = new Vector2Int(coorx, coorZ);
+        }
+
         public void GenerateTile()
         {
             DeleteTile();
-            GameObject prefab = _generator.GetTilePrefab(_terrainType);
+            GameObject prefab = _map.GetTilePrefab(_terrainType);
             if (prefab != null)
             {
                 GameObject tile = Instantiate(prefab, transform);
                 tile.transform.localScale = new Vector3(_tileSize * 2, 1, _tileSize * 2);
+                tile.GetComponent<PFTTile>().Init(_slotCoordinate, _tileSize);
             }
         }
 

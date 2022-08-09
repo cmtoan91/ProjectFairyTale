@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace MapDesigner
 {
@@ -27,9 +28,6 @@ namespace MapDesigner
         string _tileMapName = "New Tile Map";
 
         [SerializeField]
-        GameObject _currentTileMapObject;
-
-        [SerializeField]
         PFTTileMap _currentTileMap;
 
         public int TileCountX => _tileCountX;
@@ -38,7 +36,6 @@ namespace MapDesigner
         public float OffSet => _offset;
 
         public Material MaterialWhite => _matWhite;
-        Dictionary<Vector2, PFTTileSlot> _tileMap = new Dictionary<Vector2, PFTTileSlot>();
 
         Dictionary<TileTerrainType, GameObject> _tilePrefabData = new Dictionary<TileTerrainType, GameObject>();
         public Dictionary<TileTerrainType, GameObject> TilePrefabData => _tilePrefabData;
@@ -51,27 +48,28 @@ namespace MapDesigner
             {
                 for (int j = 0; j < tileCountZ; j++)
                 {
-                    _tileMap[new Vector2(i, j)] = GenerateSingleTileSlot(i, j, size, offset, _matWhite);
+                    PFTTileSlot slot = GenerateSingleTileSlot(i, j, size, offset, _matWhite);
                     if(_currentTileMap != null)
                     {
-                        _currentTileMap.AddTileSlotToMap(_tileMap[new Vector2(i, j)]);
+                        _currentTileMap.AddTileSlotToMap(slot);
                     }
                 }
             }
+            _currentTileMap.LoadTileMapData(TilePrefabData);
         }
 
         public void ClearAllTile()
         {
-            if(_currentTileMapObject == null)
+            if(_currentTileMap == null)
             {
                 Debug.Log("Tile Map not selected");
                 return;
             }
             List<Transform> allchild = new List<Transform>();
 
-            for(int i = 0; i < _currentTileMapObject.transform.childCount; i++)
+            for(int i = 0; i < _currentTileMap.transform.childCount; i++)
             {
-                allchild.Add(_currentTileMapObject.transform.GetChild(i));
+                allchild.Add(_currentTileMap.transform.GetChild(i));
             }
 
             foreach(Transform trans in allchild)
@@ -79,7 +77,7 @@ namespace MapDesigner
                 DestroyImmediate(trans.gameObject);
             }
 
-            _tileMap = new Dictionary<Vector2, PFTTileSlot>();
+            _currentTileMap.ClearTileMap();
         }
 
         public void RefreshData()
@@ -93,7 +91,10 @@ namespace MapDesigner
                     _tilePrefabData[tile.TerrainType] = tile.TilePrefab;
                     Debug.Log(tile.TerrainType + " loaded");
                 }
-            }    
+            }
+
+            if (_currentTileMap != null)
+                _currentTileMap.LoadTileMapData(_tilePrefabData);
         }
 
         public GameObject GetTilePrefab(TileTerrainType type)
@@ -112,7 +113,18 @@ namespace MapDesigner
 
         public void SaveTileMap()
         {
-
+            bool iSuccess;
+            string localPath = "Assets/resources/prefabs/map/" + _tileMapName + ".prefab";
+            localPath = AssetDatabase.GenerateUniqueAssetPath(localPath);
+            Object prefab = PrefabUtility.SaveAsPrefabAsset(_currentTileMap.gameObject, localPath, out iSuccess);
+            if(iSuccess)
+            {
+                Debug.Log("Succesfully save file to " + localPath);
+            }
+            else
+            {
+                Debug.Log("Save fail");
+            }
         }
 
         PFTTileSlot GenerateSingleTileSlot(int coorX, int coorZ, float size, float offset, Material mat)
@@ -139,9 +151,9 @@ namespace MapDesigner
             PFTTileSlot tileSlot = newTile.AddComponent<PFTTileSlot>();
             tileSlot.SetCornerOffsets(vertices);
             tileSlot.SetCorners();
-            tileSlot.SetGenerator(this);
+            tileSlot.SetMap(_currentTileMap);
             tileSlot.SetSize(size);
-
+            tileSlot.SetCoordinate(coorX, coorZ);
             return tileSlot;
         }
 
@@ -163,14 +175,14 @@ namespace MapDesigner
 
         Vector3 SetTilePosition(Transform tilePos, float tileSize, float offset, int coorX, int coorZ)
         {
-            if(_currentTileMapObject == null)
+            if(_currentTileMap == null)
             {
-                _currentTileMapObject = new GameObject(_tileMapName);
-                _currentTileMapObject.transform.position = Vector3.zero;
-                _currentTileMap = _currentTileMapObject.AddComponent<PFTTileMap>();
+                GameObject tileMapObject = new GameObject(_tileMapName);
+                tileMapObject.transform.position = Vector3.zero;
+                _currentTileMap = tileMapObject.AddComponent<PFTTileMap>();
             }
 
-            tilePos.parent = _currentTileMapObject.transform;
+            tilePos.parent = _currentTileMap.transform;
             float size = tileSize + offset;
             float worldPosX = size * Mathf.Sqrt(3) * coorX - size * Mathf.Sqrt(3) * 0.5f * (coorZ % 2);
             float worldPosZ = 1.5f * size * coorZ;
@@ -181,10 +193,15 @@ namespace MapDesigner
 
         private void OnValidate()
         {
-            foreach(Vector2 coor in _tileMap.Keys)
+            if (_currentTileMap == null)
+                return;
+
+            if (_currentTileMap.AllSlot == null)
+                return;
+
+            foreach(PFTTileSlot slot in _currentTileMap.AllSlot)
             {
-                PFTTileSlot slot = _tileMap[coor];
-                SetTilePosition(slot.transform, _tileSize, _offset, (int)coor.x, (int)coor.y);
+                SetTilePosition(slot.transform, _tileSize, _offset, slot.SlotCoordinate.x, slot.SlotCoordinate.y);
                 slot.SetSize(_tileSize);
                 Mesh mesh = slot.GetComponent<MeshFilter>().sharedMesh;
                 Vector3[] verts = CalculateVertices(_tileSize);

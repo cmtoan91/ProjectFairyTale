@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7673588324263613371}
   - component: {fileID: 7673588324263613349}
   - component: {fileID: 7673588324263613348}
+  - component: {fileID: -5635820544949313280}
   m_Layer: 5
   m_Name: CardHoldingPanel
   m_TagString: Untagged
@@ -75,3 +76,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &-5635820544949313280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7673588324263613370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e7ffb169be8c54696ea91710900a18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cardPrefab: {fileID: 3814441417996837092, guid: 03845e467db020e4ba7b3d117cd4f9ff, type: 3}
+  _currentPlayer: {fileID: 0}

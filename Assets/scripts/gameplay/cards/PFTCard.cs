@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MainGame
 {
-    public class PFTCards : MonoBehaviour
+    public class PFTCard : MonoBehaviour
     {
         #region props
         [Header("UI stuff")]

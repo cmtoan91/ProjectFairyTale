@@ -10,10 +10,10 @@ namespace MainGame
         int _numberOfCardOnHand = 0;
 
         [SerializeField]
-        PFTCards _currentSelectedCard;
+        PFTCard _currentSelectedCard;
 
         [SerializeField]
-        List<PFTCards> _allCardsOnHand = new List<PFTCards>();
+        List<PFTCard> _allCardsOnHand = new List<PFTCard>();
 
         private void Awake()
         {
@@ -44,11 +44,11 @@ namespace MainGame
 
         void SpawnCardOnHand(int count)
         {
-            _allCardsOnHand = new List<PFTCards>();
+            _allCardsOnHand = new List<PFTCard>();
 
             for (int i = 0; i < count; i++)
             {
-                _allCardsOnHand.Add(new PFTCards());
+                _allCardsOnHand.Add(new PFTCard());
             }
         }
 

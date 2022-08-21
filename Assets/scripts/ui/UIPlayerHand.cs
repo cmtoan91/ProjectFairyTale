@@ -1,54 +1,58 @@
 using UnityEngine;
+using MainGame;
 
-public class UIPlayerHand : MonoBehaviour
+namespace UI
 {
-    #region props
-    [SerializeField]
-    GameObject _cardPrefab;
-
-    [Header("Debug")]
-    [SerializeField]
-    PFTPlayerCardController _currentPlayer;
-
-    #endregion
-
-    private void Awake()
+    public class UIPlayerHand : MonoBehaviour
     {
-        SubcribeToEvents();
-    }
+        #region props
+        [SerializeField]
+        GameObject _cardPrefab;
 
-    private void Start()
-    {
-        Init();
-    }
+        [Header("Debug")]
+        [SerializeField]
+        PFTPlayerCardController _currentPlayer;
 
-    private void Init()
-    {
-        Core.BroadcastEvent(EventType.HandUISpawn, this);
-    }
+        #endregion
 
-    public void RegisterPlayer(PFTPlayerCardController player)
-    {
-        _currentPlayer = player;
-    }
+        private void Awake()
+        {
+            SubcribeToEvents();
+        }
 
-    void OnPlayerSpawn(object sender, params object[] args)
-    {
-        _currentPlayer = (PFTPlayerCardController)sender;
-    }
+        private void Start()
+        {
+            Init();
+        }
 
-    void SubcribeToEvents()
-    {
-        Core.SubscribeEvent(EventType.OnPlayerSpawn, OnPlayerSpawn);
-    }
+        private void Init()
+        {
+            Core.BroadcastEvent(EventType.HandUISpawn, this);
+        }
 
-    void UnsubcribeToEvents()
-    {
-        Core.UnsubscribeEvent(EventType.OnPlayerSpawn, OnPlayerSpawn);
-    }
+        public void RegisterPlayer(PFTPlayerCardController player)
+        {
+            _currentPlayer = player;
+        }
 
-    private void OnDestroy()
-    {
-        UnsubcribeToEvents();
+        void OnPlayerSpawn(object sender, params object[] args)
+        {
+            _currentPlayer = (PFTPlayerCardController)sender;
+        }
+
+        void SubcribeToEvents()
+        {
+            Core.SubscribeEvent(EventType.OnPlayerSpawn, OnPlayerSpawn);
+        }
+
+        void UnsubcribeToEvents()
+        {
+            Core.UnsubscribeEvent(EventType.OnPlayerSpawn, OnPlayerSpawn);
+        }
+
+        private void OnDestroy()
+        {
+            UnsubcribeToEvents();
+        }
     }
 }

@@ -2,41 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PFTTile : MonoBehaviour
+namespace MainGame
 {
-    #region props
-    [SerializeField]
-    TileTerrainType _terrainType = TileTerrainType.Dirt;
-
-    [SerializeField]
-    float _size;
-
-    [SerializeField]
-    float _height = 1;
-
-    [SerializeField]
-    Vector2Int _coordinate;
-
-    [SerializeField]
-    MeshRenderer _meshRenderer;
-    Color orgColor;
-
-    #endregion
-    public void Init(Vector2Int coor, float tileSize)
+    public class PFTTile : MonoBehaviour
     {
-        _coordinate = coor;
-        _size = tileSize;
-    }
-    
+        #region props
+        [SerializeField]
+        TileTerrainType _terrainType = TileTerrainType.Dirt;
 
-    public void SelectTile()
-    {
-        _meshRenderer.material.color = Color.blue;
-    }
+        [SerializeField]
+        float _size;
 
-    public void UnselectTile()
-    {
-        _meshRenderer.material.color = orgColor;
-    }
+        [SerializeField]
+        float _height = 1;
 
+        [SerializeField]
+        Vector2Int _coordinate;
+
+        [SerializeField]
+        MeshRenderer _meshRenderer;
+        Color orgColor;
+
+        #endregion
+        public void Init(Vector2Int coor, float tileSize)
+        {
+            _coordinate = coor;
+            _size = tileSize;
+        }
+
+
+        public void SelectTile()
+        {
+            _meshRenderer.material.color = Color.blue;
+        }
+
+        public void UnselectTile()
+        {
+            _meshRenderer.material.color = orgColor;
+        }
+    }
 }

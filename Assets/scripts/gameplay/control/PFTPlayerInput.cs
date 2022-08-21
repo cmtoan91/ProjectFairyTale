@@ -2,38 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PFTPlayerInput : MonoBehaviour
+namespace MainGame
 {
-    [SerializeField]
-    Camera _mainCam;
-
-    [SerializeField]
-    PFTTile _currentSelectedTile;
-    private void Update()
+    public class PFTPlayerInput : MonoBehaviour
     {
-        if(Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            SelectTile();
-        }
-    }
+        [SerializeField]
+        Camera _mainCam;
 
-    void SelectTile()
-    {
-        Ray ray = _mainCam.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if(Physics.Raycast(ray, out hit))
+        [SerializeField]
+        PFTTile _currentSelectedTile;
+        private void Update()
         {
-            Collider col = hit.collider;
-            PFTTile tile;
-            if (col.TryGetComponent<PFTTile>(out tile))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                tile.SelectTile();
-                if (_currentSelectedTile != null)
-                {
-                    _currentSelectedTile.UnselectTile();
-                }
+                SelectTile();
+            }
+        }
 
-                _currentSelectedTile = tile;
+        void SelectTile()
+        {
+            Ray ray = _mainCam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                Collider col = hit.collider;
+                PFTTile tile;
+                if (col.TryGetComponent<PFTTile>(out tile))
+                {
+                    tile.SelectTile();
+                    if (_currentSelectedTile != null)
+                    {
+                        _currentSelectedTile.UnselectTile();
+                    }
+
+                    _currentSelectedTile = tile;
+                }
             }
         }
     }

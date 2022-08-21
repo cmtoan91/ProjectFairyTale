@@ -1,18 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class PFTCards : MonoBehaviour
+namespace MainGame
 {
-    // Start is called before the first frame update
-    void Start()
+    public class PFTCards : MonoBehaviour
     {
-        
-    }
+        #region props
+        [Header("UI Stuffs")]
+        [SerializeField]
+        Image _cardImage;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [SerializeField]
+        string _cardName;
+
+        [SerializeField]
+        SO_CardEffect _cardEffects;
+
+
+        PFTTile _currentTile;
+        #endregion
+        void MoveCard(PFTTile tile)
+        {
+            if (CheckIfMoveValid(tile))
+            {
+                _currentTile = tile;
+            }
+        }
+
+        bool CheckIfMoveValid(PFTTile nextTile)
+        {
+            return true;
+        }
+
+        void InitCard()
+        {
+
+        }
     }
 }

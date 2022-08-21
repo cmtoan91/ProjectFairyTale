@@ -8,35 +8,26 @@ namespace MainGame
     public class PFTCards : MonoBehaviour
     {
         #region props
-        [Header("UI Stuffs")]
-        [SerializeField]
+        [Header("UI stuff")]
         Image _cardImage;
 
         [SerializeField]
-        string _cardName;
+        Text _cardName;
 
-        [SerializeField]
-        SO_CardEffect _cardEffects;
-
-
-        PFTTile _currentTile;
+        SO_CardInfo _info;
         #endregion
-        void MoveCard(PFTTile tile)
+        public void InitCard(SO_CardInfo cardInfo)
         {
-            if (CheckIfMoveValid(tile))
-            {
-                _currentTile = tile;
-            }
+            _cardImage.sprite = cardInfo.CardImage;
+            _cardName.text = cardInfo.CardName;
+            _info = cardInfo;
         }
 
-        bool CheckIfMoveValid(PFTTile nextTile)
+        public void DeployUnit(PFTTile tile)
         {
-            return true;
-        }
-
-        void InitCard()
-        {
-
+            GameObject unitObject = Instantiate(_info.UnitPrefab, tile.transform);
+            PFTUnits unit = unitObject.GetComponent<PFTUnits>();
+            unit.InitUnit(tile, _info.CardEffect);
         }
     }
 }

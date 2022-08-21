@@ -4,6 +4,7 @@ using UnityEditor;
 namespace MapDesigner
 {
     [CustomEditor(typeof(PFTTileSlot))]
+    [CanEditMultipleObjects]
     public class PFTTileSlotEditor : Editor
     {
         PFTTileSlot tileslot;

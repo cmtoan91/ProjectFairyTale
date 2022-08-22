@@ -6,6 +6,7 @@ namespace MainGame
 {
     public class PFTPlayerCardController : MonoBehaviour
     {
+        #region Props
         [SerializeField]
         int _numberOfCardOnHand = 0;
 
@@ -13,8 +14,12 @@ namespace MainGame
         PFTCard _currentSelectedCard;
 
         [SerializeField]
+        List<PFTCard> _allCardsInDeck = new List<PFTCard>();
+
+        [SerializeField]
         List<PFTCard> _allCardsOnHand = new List<PFTCard>();
 
+        #endregion
         private void Awake()
         {
             SubcribeToEvents();
@@ -25,41 +30,54 @@ namespace MainGame
             Core.BroadcastEvent(EventType.OnPlayerSpawn, this);
         }
 
-        private void Update()
-        {
-            //Test
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                SpawnCardOnHand(_numberOfCardOnHand);
-            }
-        }
-
-
         void RegisterPlayer(object sender, params object[] args)
         {
             UIPlayerHand handui = (UIPlayerHand)sender;
             handui.RegisterPlayer(this);
         }
 
-
-        void SpawnCardOnHand(int count)
+        void DrawCards(object sender, params object[] args)
         {
-            _allCardsOnHand = new List<PFTCard>();
-
-            for (int i = 0; i < count; i++)
+            int noOfCard = (int)args[0];
+            int toDraw = noOfCard;
+            if(_allCardsInDeck.Count < toDraw)
             {
-                _allCardsOnHand.Add(new PFTCard());
+                toDraw = _allCardsInDeck.Count;
             }
+
+            List<PFTCard> toRemove = new List<PFTCard>();
+
+            for(int i = 0; i < toDraw; i++)
+            {
+                PFTCard cardToDraw = _allCardsInDeck[_allCardsInDeck.Count - i - 1];
+                SpawnCardOnHand(cardToDraw);
+                toRemove.Add(cardToDraw);
+            }
+
+            for(int i = 0; i < toDraw; i++)
+            {
+                _allCardsInDeck.Remove(toRemove[i]);
+            }
+
+            _numberOfCardOnHand = _allCardsOnHand.Count;
+        }
+
+
+        public void SpawnCardOnHand(PFTCard card)
+        {
+            _allCardsOnHand.Add(card);
         }
 
         void SubcribeToEvents()
         {
             Core.SubscribeEvent(EventType.HandUISpawn, RegisterPlayer);
+            Core.SubscribeEvent(EventType.DrawPhaseStart, DrawCards);
         }
 
         void UnsubcribeToEvents()
         {
             Core.UnsubscribeEvent(EventType.HandUISpawn, RegisterPlayer);
+            Core.UnsubscribeEvent(EventType.DrawPhaseStart, DrawCards);
         }
 
         private void OnDestroy()

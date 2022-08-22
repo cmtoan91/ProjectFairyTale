@@ -42,6 +42,7 @@ public enum EventType
 {
     OnPlayerSpawn = 1,
     HandUISpawn = 10,
+    DrawPhaseStart = 101,
 }
 public enum PFTUiFadeType
 {

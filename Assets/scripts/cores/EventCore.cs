@@ -40,6 +40,11 @@ public static partial class Core
         if (_eventBag.TryGetValue(eventName, out existing))
             existing(sender, args); //broadcast to all subscribers on that event
     }
+
+    public static void BroadcastEvent(EventType eventType, object sender, params object[] args)
+    {
+        BroadcastEvent(eventType.ToString(), sender, args);
+    }
     public static void UnsubscribeEvent(string eventName, GameEvent eventObj)
     {
          //try to fetch event

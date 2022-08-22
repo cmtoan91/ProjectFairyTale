@@ -1,18 +1,53 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class GameManager : IStateMachine<PFTGameStateType, PFTGameMessageType>
+namespace MainGame
 {
-    public override PFTGameStateType UnassignedType => PFTGameStateType.Unassigned;
-
-    private void Awake()
+    public class GameManager : IStateMachine<PFTGameStateType, PFTGameMessageType>
     {
-        Init();
+        #region Serialized Properties
+        [SerializeField]
+        int _cardDrawnPerPhase = 3;
+        public int CardsDrawnPerPhase => _cardDrawnPerPhase;
+        #endregion
+        public override PFTGameStateType UnassignedType => PFTGameStateType.Unassigned;
+
+        private void Awake()
+        {
+            Init();
+            ChangeState(PFTGameStateType.DrawPhase);
+        }
+
+        void Init()
+        {
+            Type enumType = Type.GetType("PFTGameStateType");
+            PFTGameStateType[] allGameStateType = Enum.GetValues(enumType) as PFTGameStateType[];
+            foreach (PFTGameStateType gameStateType in allGameStateType)
+            {
+                string stateName = string.Format("PFT{0}GameState", gameStateType);
+                Type stateType = Type.GetType(stateName);
+
+                if (stateType != null)
+                {
+                    IState state = Activator.CreateInstance(stateType, new object[] { this }) as GameState;
+                    if (state == null)
+                        throw new Exception(stateName + " is not a valid state or missing.");
+                    else
+                        RegisterState(state);
+                }
+            }
+        }
+
+        public abstract class GameState : IState
+        {
+            protected GameManager Manager;
+            public GameState(GameManager manager) : base(manager)
+            {
+                Manager = manager;
+            }
+        }
     }
 
-    void Init()
-    {
-
-    }
 }

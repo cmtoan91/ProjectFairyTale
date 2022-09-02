@@ -6,6 +6,7 @@ public abstract class IStateMachine<T, U> : MonoBehaviour where T : struct, Enum
                                                             where U : struct, Enum
 {
     Dictionary<T, IState> _states = new Dictionary<T, IState>();
+    [SerializeField]
     T _currentStateType;
     public T CurrentStateType { get { return _currentStateType; } }
     public abstract T UnassignedType { get; }
@@ -39,7 +40,6 @@ public abstract class IStateMachine<T, U> : MonoBehaviour where T : struct, Enum
             return false;
         }
 
-
         if (_currentStateType.CompareTo(stateType) == 0)
             return false;
 
@@ -57,6 +57,7 @@ public abstract class IStateMachine<T, U> : MonoBehaviour where T : struct, Enum
         _currentStateType = stateType;
 
         _changingState = false;
+
         return true;
     }
     //update brain

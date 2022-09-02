@@ -17,7 +17,15 @@ namespace MainGame
         private void Awake()
         {
             Init();
-            ChangeState(PFTGameStateType.DrawPhase);
+        }
+
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("draw");
+                ChangeState(PFTGameStateType.DrawPhase);
+            }
         }
 
         void Init()
@@ -26,12 +34,13 @@ namespace MainGame
             PFTGameStateType[] allGameStateType = Enum.GetValues(enumType) as PFTGameStateType[];
             foreach (PFTGameStateType gameStateType in allGameStateType)
             {
-                string stateName = string.Format("PFT{0}GameState", gameStateType);
+                string stateName = string.Format("MainGame.PFT{0}GameState", gameStateType);
                 Type stateType = Type.GetType(stateName);
 
                 if (stateType != null)
                 {
                     IState state = Activator.CreateInstance(stateType, new object[] { this }) as GameState;
+                    Debug.Log(state);
                     if (state == null)
                         throw new Exception(stateName + " is not a valid state or missing.");
                     else

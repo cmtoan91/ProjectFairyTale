@@ -88,5 +88,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e7ffb169be8c54696ea91710900a18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardPrefab: {fileID: 3814441417996837092, guid: 03845e467db020e4ba7b3d117cd4f9ff, type: 3}
+  _cardUiPrefab: {fileID: 4304396584971564800, guid: 03845e467db020e4ba7b3d117cd4f9ff, type: 3}
   _currentPlayer: {fileID: 0}

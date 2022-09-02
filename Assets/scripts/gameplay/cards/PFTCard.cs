@@ -9,24 +9,21 @@ namespace MainGame
     {
         #region props
         [Header("UI stuff")]
-        Image _cardImage;
-
         [SerializeField]
-        Text _cardName;
+        SpriteRenderer _cardImage;
 
         SO_CardInfo _info;
         #endregion
         public void InitCard(SO_CardInfo cardInfo)
         {
             _cardImage.sprite = cardInfo.CardImage;
-            _cardName.text = cardInfo.CardName;
             _info = cardInfo;
         }
 
         public void DeployUnit(PFTTile tile)
         {
             GameObject unitObject = Instantiate(_info.UnitPrefab, tile.transform);
-            PFTUnits unit = unitObject.GetComponent<PFTUnits>();
+            PFTUnit unit = unitObject.GetComponent<PFTUnit>();
             unit.InitUnit(tile, _info.CardEffect);
         }
     }

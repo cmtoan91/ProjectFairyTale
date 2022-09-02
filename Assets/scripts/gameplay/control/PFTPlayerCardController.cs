@@ -8,17 +8,17 @@ namespace MainGame
     {
         #region Props
         [SerializeField]
-        int _numberOfCardOnHand = 0;
-
-        [SerializeField]
         PFTCard _currentSelectedCard;
 
         [SerializeField]
-        List<PFTCard> _allCardsInDeck = new List<PFTCard>();
+        List<SO_CardInfo> _allCardsInDeck = new List<SO_CardInfo>();
 
         [SerializeField]
-        List<PFTCard> _allCardsOnHand = new List<PFTCard>();
+        List<SO_CardInfo> _allCardsOnHand = new List<SO_CardInfo>();
+        public List<SO_CardInfo> AllCardsOnHand => _allCardsOnHand;
 
+        int _numberOfCardOnHand = 0;
+        public int NumberOfCardOnHand => _numberOfCardOnHand;
         #endregion
         private void Awake()
         {
@@ -45,11 +45,11 @@ namespace MainGame
                 toDraw = _allCardsInDeck.Count;
             }
 
-            List<PFTCard> toRemove = new List<PFTCard>();
+            List<SO_CardInfo> toRemove = new List<SO_CardInfo>();
 
             for(int i = 0; i < toDraw; i++)
             {
-                PFTCard cardToDraw = _allCardsInDeck[_allCardsInDeck.Count - i - 1];
+                SO_CardInfo cardToDraw = _allCardsInDeck[_allCardsInDeck.Count - i - 1];
                 SpawnCardOnHand(cardToDraw);
                 toRemove.Add(cardToDraw);
             }
@@ -60,10 +60,11 @@ namespace MainGame
             }
 
             _numberOfCardOnHand = _allCardsOnHand.Count;
+            Core.BroadcastEvent(EventType.DrawDone, this);
         }
 
 
-        public void SpawnCardOnHand(PFTCard card)
+        public void SpawnCardOnHand(SO_CardInfo card)
         {
             _allCardsOnHand.Add(card);
         }
@@ -71,13 +72,13 @@ namespace MainGame
         void SubcribeToEvents()
         {
             Core.SubscribeEvent(EventType.HandUISpawn, RegisterPlayer);
-            Core.SubscribeEvent(EventType.DrawPhaseStart, DrawCards);
+            Core.SubscribeEvent(EventType.DrawStart, DrawCards);
         }
 
         void UnsubcribeToEvents()
         {
             Core.UnsubscribeEvent(EventType.HandUISpawn, RegisterPlayer);
-            Core.UnsubscribeEvent(EventType.DrawPhaseStart, DrawCards);
+            Core.UnsubscribeEvent(EventType.DrawStart, DrawCards);
         }
 
         private void OnDestroy()

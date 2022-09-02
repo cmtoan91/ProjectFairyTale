@@ -7,6 +7,17 @@ namespace MainGame {
         [SerializeField]
         Image _cardImage;
 
-        PFTCard _card;
+        [SerializeField]
+        Text _cardName;
+
+        SO_CardInfo _cardInfo;
+
+        public void Init(SO_CardInfo cardInfo)
+        {
+            _cardInfo = cardInfo;
+            _cardImage.sprite = cardInfo.CardImage;
+            _cardName.text = cardInfo.CardName;
+        }
+
     }
 }

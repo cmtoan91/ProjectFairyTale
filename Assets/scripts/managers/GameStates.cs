@@ -8,7 +8,7 @@ namespace MainGame
 
         public override void OnStateEnter(PFTGameStateType prevStateType, object[] args)
         {
-            Core.BroadcastEvent(EventType.DrawPhaseStart, Manager, Manager.CardsDrawnPerPhase);
+            Core.BroadcastEvent(EventType.DrawStart, Manager, Manager.CardsDrawnPerPhase);
         }
     }
 }

@@ -11,6 +11,9 @@ namespace MainGame
         PFTCard _currentSelectedCard;
 
         [SerializeField]
+        GameObject _3dCardPrefab;
+
+        [SerializeField]
         List<SO_CardInfo> _allCardsInDeck = new List<SO_CardInfo>();
 
         [SerializeField]
@@ -63,6 +66,23 @@ namespace MainGame
             Core.BroadcastEvent(EventType.DrawDone, this);
         }
 
+        void SelectCard(object sender, params object[] args)
+        {
+            UICard ui = (UICard)sender;
+            GameObject cardObj = Instantiate(_3dCardPrefab, Vector3.zero, Quaternion.identity);
+            PFTCard card = cardObj.GetComponent<PFTCard>();
+            card.InitCard(ui.CardInfo);
+            _currentSelectedCard = card;
+        }
+
+        void UnselectCard(object sender, params object[] args)
+        {
+            if(_currentSelectedCard != null)
+            {
+                Destroy(_currentSelectedCard.gameObject);
+                _currentSelectedCard = null;
+            }
+        }
 
         public void SpawnCardOnHand(SO_CardInfo card)
         {
@@ -73,12 +93,16 @@ namespace MainGame
         {
             Core.SubscribeEvent(EventType.HandUISpawn, RegisterPlayer);
             Core.SubscribeEvent(EventType.DrawStart, DrawCards);
+            Core.SubscribeEvent(EventType.OnCardSelected, SelectCard);
+            Core.SubscribeEvent(EventType.OnCardUnselected, UnselectCard);
         }
 
         void UnsubcribeToEvents()
         {
             Core.UnsubscribeEvent(EventType.HandUISpawn, RegisterPlayer);
             Core.UnsubscribeEvent(EventType.DrawStart, DrawCards);
+            Core.UnsubscribeEvent(EventType.OnCardSelected, SelectCard);
+            Core.UnsubscribeEvent(EventType.OnCardUnselected, UnselectCard);
         }
 
         private void OnDestroy()

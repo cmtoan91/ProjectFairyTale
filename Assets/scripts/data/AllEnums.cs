@@ -43,6 +43,8 @@ public enum EventType
     OnPlayerSpawn = 1,
     OnUnitSpawn = 5,
     HandUISpawn = 10,
+    OnCardSelected = 20,
+    OnCardUnselected = 21,
     DrawStart = 101,
     DrawDone = 109,
 }

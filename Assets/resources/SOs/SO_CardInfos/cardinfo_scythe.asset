@@ -15,4 +15,5 @@ MonoBehaviour:
   _cardImage: {fileID: 21300000, guid: c6f4dc5f7b7c8c2458dc180675ae5ddf, type: 3}
   _cardName: Scythe
   _cardEffect: {fileID: 11400000, guid: 509e63cfbfae60e4890ae9583257ceba, type: 2}
+  _unitImage: {fileID: 21300000, guid: c6894a27494f1f140b3d602392cff2bb, type: 3}
   _unitPrefab: {fileID: 6932534980332875373, guid: 251384f50de782a4c9cedb231420c4a3, type: 3}

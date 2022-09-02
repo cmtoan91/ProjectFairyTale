@@ -22,9 +22,10 @@ namespace MainGame
 
         public void DeployUnit(PFTTile tile)
         {
-            GameObject unitObject = Instantiate(_info.UnitPrefab, tile.transform);
+            GameObject unitObject = Instantiate(_info.UnitPrefab, tile.transform.position, Quaternion.identity);
+            unitObject.transform.parent = tile.transform;
             PFTUnit unit = unitObject.GetComponent<PFTUnit>();
-            unit.InitUnit(tile, _info.CardEffect);
+            unit.InitUnit(tile, _info.CardEffect, _info.UnitImage);
         }
     }
 }

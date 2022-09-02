@@ -8,20 +8,28 @@ namespace MainGame
     {
         #region Props
         [SerializeField]
-        PFTCard _currentSelectedCard;
-
-        [SerializeField]
         GameObject _3dCardPrefab;
 
+
+        [Header("Debug")]
         [SerializeField]
         List<SO_CardInfo> _allCardsInDeck = new List<SO_CardInfo>();
 
         [SerializeField]
         List<SO_CardInfo> _allCardsOnHand = new List<SO_CardInfo>();
+
+        [SerializeField]
+        PFTCard _currentSelectedCard;
+
+        [SerializeField]
+        PFTTile _currentSelectedTile;
+
         public List<SO_CardInfo> AllCardsOnHand => _allCardsOnHand;
 
         int _numberOfCardOnHand = 0;
         public int NumberOfCardOnHand => _numberOfCardOnHand;
+        Camera _mainCamera;
+
         #endregion
         private void Awake()
         {
@@ -31,6 +39,24 @@ namespace MainGame
         private void Start()
         {
             Core.BroadcastEvent(EventType.OnPlayerSpawn, this);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                MoveCard();
+            }
+
+            if(Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                //Cursor.visible = true;
+            }
+        }
+
+        public void SetMainCam(Camera cam)
+        {
+            _mainCamera = cam;
         }
 
         void RegisterPlayer(object sender, params object[] args)
@@ -77,11 +103,62 @@ namespace MainGame
 
         void UnselectCard(object sender, params object[] args)
         {
-            if(_currentSelectedCard != null)
+            if (_currentSelectedCard == null)
+                return;
+
+            if(_currentSelectedTile != null)
             {
-                Destroy(_currentSelectedCard.gameObject);
-                _currentSelectedCard = null;
+                _currentSelectedCard.DeployUnit(_currentSelectedTile);
             }
+            Destroy(_currentSelectedCard.gameObject);
+            _currentSelectedCard = null;
+        }
+
+        void MoveCard()
+        {
+            if (_currentSelectedCard == null)
+                return;
+
+            Vector3 screenPos = Input.mousePosition;
+            screenPos.z = 10f;
+            Ray ray = _mainCamera.ScreenPointToRay(screenPos);
+            Vector3 dir = ray.direction;
+
+            float h = _mainCamera.transform.position.y - 1;
+            float angle = Vector3.Angle(Vector3.down, dir) * Mathf.Deg2Rad;
+            float mag = h / Mathf.Cos(angle);
+            Vector3 worldPos = _mainCamera.transform.position + dir * mag;
+
+            _currentSelectedCard.transform.position = worldPos + new Vector3(2, 0, 3);
+
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                Collider col = hit.collider;
+                PFTTile tile;
+                if (col.GetComponentInChildren<PFTTile>())
+                {
+                    tile = col.GetComponentInChildren<PFTTile>();
+                    if (_currentSelectedTile != null)
+                    {
+                        if (_currentSelectedTile == tile)
+                            return;
+
+                        _currentSelectedTile.UnselectTile();
+                    }
+                    tile.SelectTile();
+                    _currentSelectedTile = tile;
+                }
+            }
+            else
+            {
+                if(_currentSelectedTile != null)
+                {
+                    _currentSelectedTile.UnselectTile();
+                }
+                _currentSelectedTile = null;
+            }
+            //Cursor.visible = false;
         }
 
         public void SpawnCardOnHand(SO_CardInfo card)

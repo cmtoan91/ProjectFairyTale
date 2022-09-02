@@ -113,16 +113,27 @@ namespace MainGame {
                 PFTUnit unit = (PFTUnit)sender;
                 unit.SetCamera(transform);
             }
-    }
+        }
+
+        void OnPlayerSpawn(object sender, params object[] args)
+        {
+            if(sender is PFTPlayerCardController)
+            {
+                PFTPlayerCardController player = (PFTPlayerCardController)sender;
+                player.SetMainCam(_cameraToControl);
+            }
+        }
 
         void SubcribeToEvents()
         {
             Core.SubscribeEvent(EventType.OnUnitSpawn, SetCameraPosition);
+            Core.SubscribeEvent(EventType.OnPlayerSpawn, OnPlayerSpawn);
         }
 
         void UnsubcribeToEvents()
         {
-
+            Core.UnsubscribeEvent(EventType.OnUnitSpawn, SetCameraPosition);
+            Core.UnsubscribeEvent(EventType.OnPlayerSpawn, OnPlayerSpawn);
         }
 
         private void OnDestroy()

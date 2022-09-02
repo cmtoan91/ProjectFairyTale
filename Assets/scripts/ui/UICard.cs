@@ -33,6 +33,10 @@ namespace MainGame
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if(eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
             _cardImage.color = new Color(0, 0, 0, 0);
             _textPanel.SetActive(false);
             Core.BroadcastEvent(EventType.OnCardSelected, this);
@@ -40,6 +44,10 @@ namespace MainGame
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
             _cardImage.color = new Color(1, 1, 1, 1);
             _textPanel.SetActive(true);
             _rect.anchoredPosition = _orginalPos;
@@ -48,6 +56,10 @@ namespace MainGame
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
             transform.position = eventData.position;
         }
     }

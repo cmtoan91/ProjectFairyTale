@@ -30,9 +30,9 @@ namespace MainGame
             _size = tileSize;
         }
 
-
         public void SelectTile()
         {
+            orgColor = _meshRenderer.material.color;
             _meshRenderer.material.color = Color.blue;
         }
 

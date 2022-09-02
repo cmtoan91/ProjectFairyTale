@@ -8,6 +8,9 @@ namespace MainGame
     {
         #region props
         [SerializeField]
+        SpriteRenderer _renderer;
+
+        [SerializeField]
         Transform _visualImage;
 
         [SerializeField]
@@ -27,10 +30,11 @@ namespace MainGame
             FaceCamera(_mainCamera);
         }
 
-        public void InitUnit(PFTTile tile, SO_CardEffect effect)
+        public void InitUnit(PFTTile tile, SO_CardEffect effect, Sprite sprite)
         {
             _currentTile = tile;
             _effect = effect;
+            _renderer.sprite = sprite;
         }
 
         public void MoveUnit(PFTTile tile)

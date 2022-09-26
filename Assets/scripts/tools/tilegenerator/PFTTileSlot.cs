@@ -72,6 +72,7 @@ namespace MapDesigner {
                 GameObject tile = Instantiate(prefab, transform);
                 tile.transform.localScale = new Vector3(_tileSize / _prefabTileSize, _tileHeight /_prefabTileHeight, _tileSize / _prefabTileSize);
                 tile.GetComponent<PFTTile>().Init(_slotCoordinate, _tileSize);
+                tile.AddComponent<CapsuleCollider>();
             }
         }
 

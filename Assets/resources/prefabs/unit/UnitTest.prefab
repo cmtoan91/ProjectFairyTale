@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6932534980332875377}
   - component: {fileID: 6932534980332875375}
-  m_Layer: 0
+  - component: {fileID: 7035372621662156747}
+  m_Layer: 6
   m_Name: UnitTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,6 +48,20 @@ MonoBehaviour:
   _renderer: {fileID: 5331422742028653691}
   _visualImage: {fileID: 4433099880499418839}
   _mainCamera: {fileID: 0}
+--- !u!136 &7035372621662156747
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6932534980332875373}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 3
+  m_Height: 7
+  m_Direction: 1
+  m_Center: {x: 0, y: 3, z: 0}
 --- !u!1 &6954950537350305794
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4433099880499418839}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UnitVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,8 +105,7 @@ GameObject:
   - component: {fileID: 8978104030667196449}
   - component: {fileID: 250294495683146585}
   - component: {fileID: 3556903185889641552}
-  - component: {fileID: 3241913627930839323}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,19 +175,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &3241913627930839323
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7680089272605769079}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &9101467301546984917
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,7 +185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4160290718406453329}
   - component: {fileID: 5331422742028653691}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 2D Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}

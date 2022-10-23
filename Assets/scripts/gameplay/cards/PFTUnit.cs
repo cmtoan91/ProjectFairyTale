@@ -57,6 +57,17 @@ namespace MainGame
             _mainCamera = cam;
         }
 
+        public void OnUnitSelected()
+        {
+            _renderer.color = Color.yellow;
+            Core.BroadcastEvent(EventType.OnUnitSelected, transform);
+        }
+
+        public void OnUnitUnselected()
+        {
+            _renderer.color = Color.white;
+        }
+
         void FaceCamera(Transform campos)
         {
             if(campos == null)

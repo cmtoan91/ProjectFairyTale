@@ -29,9 +29,13 @@ namespace MainGame {
         [SerializeField]
         float _minDiff = 1f;
 
+        [SerializeField]
+        float _currentCameraDistance = 15f;
+
 
         Vector3 _mousePosThisFrame;
         Vector3 _mousePosLastFrame;
+        Transform _currentTarget;
         #endregion
 
         private void Awake()
@@ -42,7 +46,12 @@ namespace MainGame {
         private void Update()
         {
             ToMoveCamera(_keyToMove);
-            ToRotateCameraAroundSelf(_keyToRotate);
+
+            if(_currentTarget == null)
+                ToRotateAroundTarget(_keyToRotate, Vector3.zero, _currentCameraDistance);
+            else
+                ToRotateAroundTarget(_keyToRotate, _currentTarget.position, _currentCameraDistance);
+
             ZoomCamera();
         }
 
@@ -61,7 +70,7 @@ namespace MainGame {
                 if (delta.magnitude > _minDiff)
                 {
                     Vector3 camMoveDir = _cameraToControl.transform.right * delta.x + _cameraToControl.transform.up * delta.y;
-                    _cameraToControl.transform.position -= camMoveDir * _cameraMoveSpeed * Time.deltaTime * (int)_controlType;
+                    _cameraToControl.transform.position = Vector3.Slerp(_cameraToControl.transform.position, _cameraToControl.transform.position - camMoveDir, _cameraMoveSpeed * Time.deltaTime * (int)_controlType);
                 }
                 _mousePosLastFrame = Input.mousePosition;
             }
@@ -84,7 +93,7 @@ namespace MainGame {
                     Vector3 toRotate = new Vector3(delta.y, -delta.x, 0);
                     Vector3 currentEulers = _cameraToControl.transform.eulerAngles;
                     currentEulers.z = 0;
-                    currentEulers -= toRotate * _cameraPanSpeed * Time.deltaTime * (int)_controlType;
+                    currentEulers = Vector3.Slerp(currentEulers, currentEulers - toRotate, _cameraPanSpeed * Time.deltaTime * (int)_controlType);
                     _cameraToControl.transform.eulerAngles = currentEulers;
                 }
                 _mousePosLastFrame = Input.mousePosition;
@@ -96,9 +105,45 @@ namespace MainGame {
             _cameraToControl.transform.position += Input.mouseScrollDelta.y * _zoomSpeed * Time.deltaTime * _cameraToControl.transform.forward;
         }
 
-        void ToRotateAroundTarget(Vector3 targetPos)
+        void ToRotateAroundTarget(KeyCode movekey, Vector3 targetPos, float distanceToTarget)
         {
+            if (Input.GetKeyDown(movekey))
+            {
+                ResetMousePosition();
+            }
 
+            if (Input.GetKey(movekey))
+            {
+                _mousePosThisFrame = Input.mousePosition;
+
+                Vector3 delta = _mousePosThisFrame - _mousePosLastFrame;
+                if (delta.magnitude > _minDiff)
+                {
+                    Vector3 currentDir = (_cameraToControl.transform.position - targetPos).normalized;
+                    Vector3 currentDirXZ = currentDir;
+                    currentDirXZ.y = 0;
+                    currentDirXZ = currentDirXZ.normalized;
+                    Vector3 targetDirXZ = Quaternion.AngleAxis((Vector3.SignedAngle(Vector3.forward, currentDirXZ, Vector3.up) + delta.x), Vector3.up) * Vector3.forward;
+                   
+                    Vector3 axisXZ = Vector3.Cross(Vector3.up, targetDirXZ);
+                    Vector3 targetDir = Quaternion.AngleAxis(Vector3.SignedAngle(currentDirXZ, currentDir, axisXZ) + delta.y, axisXZ) * targetDirXZ;
+
+                    Vector3 finalPosition = targetDir * distanceToTarget + targetPos;
+
+                    if(finalPosition.y < 5)
+                    {
+                        finalPosition.y = 5;
+                        targetDir = (finalPosition - targetPos).normalized;
+                    }
+
+                    Vector3 targetDirUp = Vector3.Cross(targetDir, axisXZ);
+
+                    _cameraToControl.transform.position = Vector3.Slerp(_cameraToControl.transform.position, finalPosition, _cameraPanSpeed * Time.deltaTime * (int)_controlType);
+                    _cameraToControl.transform.rotation = Quaternion.Slerp(_cameraToControl.transform.rotation, Quaternion.LookRotation(-targetDir, targetDirUp), _cameraPanSpeed * Time.deltaTime * (int)_controlType);
+
+                }
+                _mousePosLastFrame = Input.mousePosition;
+            }
         }
 
         void ResetMousePosition()
@@ -124,16 +169,24 @@ namespace MainGame {
             }
         }
 
+        void SetCameraTarget(object sender, params object[] args)
+        {
+            _currentTarget = (Transform)sender;
+        }
+
         void SubcribeToEvents()
         {
             Core.SubscribeEvent(EventType.OnUnitSpawn, SetCameraPosition);
             Core.SubscribeEvent(EventType.OnPlayerSpawn, OnPlayerSpawn);
+            Core.SubscribeEvent(EventType.OnUnitSelected, SetCameraTarget);
         }
 
         void UnsubcribeToEvents()
         {
             Core.UnsubscribeEvent(EventType.OnUnitSpawn, SetCameraPosition);
             Core.UnsubscribeEvent(EventType.OnPlayerSpawn, OnPlayerSpawn);
+            Core.SubscribeEvent(EventType.OnUnitSelected, SetCameraTarget);
+
         }
 
         private void OnDestroy()

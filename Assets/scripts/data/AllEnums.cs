@@ -42,6 +42,7 @@ public enum EventType
 {
     OnPlayerSpawn = 1,
     OnUnitSpawn = 5,
+    OnUnitSelected = 6,
     HandUISpawn = 10,
     OnCardSelected = 20,
     OnCardUnselected = 21,

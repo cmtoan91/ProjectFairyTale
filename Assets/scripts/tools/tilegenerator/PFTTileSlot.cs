@@ -13,6 +13,8 @@ namespace MapDesigner {
         [SerializeField]
         float _tileHeight = 1;
 
+        public float TileHeight => _tileHeight;
+
         float _tileSize;
         float _prefabTileSize = 0.5f;
         float _prefabTileHeight = 1;
@@ -71,7 +73,7 @@ namespace MapDesigner {
             {
                 GameObject tile = Instantiate(prefab, transform);
                 tile.transform.localScale = new Vector3(_tileSize / _prefabTileSize, _tileHeight /_prefabTileHeight, _tileSize / _prefabTileSize);
-                tile.GetComponent<PFTTile>().Init(_slotCoordinate, _tileSize);
+                tile.GetComponent<PFTTile>().Init(_slotCoordinate, _tileSize, _tileHeight);
                 tile.AddComponent<CapsuleCollider>();
             }
         }
